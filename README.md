@@ -1,3 +1,5 @@
+Ngôn ngữ: Tiếng Việt | [English](./README.en.md)
+
 # glm-toolbox
 
 Bộ công cụ dòng lệnh nhỏ bằng Python, **chỉ dùng thư viện chuẩn** — không cần `pip install` gì cả.
