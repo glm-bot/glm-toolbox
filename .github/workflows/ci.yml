@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Biên dịch kiểm tra toàn bộ script
+        run: python -m py_compile organize.py rename_seq.py checksum.py
+
+      - name: Smoke test organize.py
+        run: |
+          mkdir -p /tmp/demo
+          touch /tmp/demo/a.png /tmp/demo/b.pdf /tmp/demo/c.zip /tmp/demo/d.py
+          python organize.py /tmp/demo
+          test -f /tmp/demo/images/a.png
+          test -f /tmp/demo/documents/b.pdf
+          test -f /tmp/demo/archives/c.zip
+          test -f /tmp/demo/code/d.py
+
+      - name: Smoke test rename_seq.py
+        run: |
+          mkdir -p /tmp/rename
+          touch /tmp/rename/x.txt /tmp/rename/y.txt
+          python rename_seq.py /tmp/rename --prefix doc_
+          test -f /tmp/rename/doc_001.txt
+          test -f /tmp/rename/doc_002.txt
+
+      - name: Smoke test checksum.py
+        run: |
+          echo "noi dung thu nghiem" > /tmp/demo.txt
+          python checksum.py /tmp/demo.txt > /tmp/SHA256SUMS
+          python checksum.py --check /tmp/SHA256SUMS
